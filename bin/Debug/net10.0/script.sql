@@ -1,0 +1,23 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS Cliente (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    NomeCompleto TEXT NOT NULL,
+    Cpf TEXT NOT NULL UNIQUE,
+    DataNascimento TEXT NOT NULL,
+    Email TEXT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Divida (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ClienteId INTEGER NOT NULL,
+    Valor DECIMAL(10,2) NOT NULL CHECK (Valor > 0),
+    Paga INTEGER NOT NULL DEFAULT 0,
+    DataCriacao TEXT NOT NULL,
+    DataPagamento TEXT NULL,
+    FOREIGN KEY (ClienteId) REFERENCES Cliente(Id)
+);
+
+CREATE INDEX IF NOT EXISTS IX_Divida_ClienteId ON Divida(ClienteId);
+
+CREATE UNIQUE INDEX IF NOT EXISTS UX_Divida_ClienteEmAberto ON Divida(ClienteId) WHERE Paga = 0;
